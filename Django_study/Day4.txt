@@ -1,0 +1,57 @@
+使用Django创建网页通常分为3个阶段:
+1>定义URL
+2>编写视图
+3>编写模板
+URL模式描述了URL是如何设计的，让Django知道如何将浏览器请求与网站URL匹配，以确定返回哪个网页
+每个URL都被映射到特定的视图 -- 视图函数获取并处理网页所需的数据
+视图函数通常调用一个模板，模板生成浏览器能够理解的网页
+
+1.映射URL
+当前，基础URL返回默认的Django网站，我们需要将这个基础URL映射到web_app的主页
+1>打开learning_log中的文件urls.py
+from django.conf.urls import include, url
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
+]
+前两行导入了为项目和管理网站管理URL的函数和模块
+变量urlpatterns包含项目中的应用程序的URL
+模块admin.site.urls定义了可在管理网站中请求的所有URL
+
+我们需要包含web_app的URL:
+url(r'', include('web_app.urls', namespace = 'web_app')),
+这行代码包含了模块web_app.urls,并且包含了实参namespace,让我们能够将web_app的URL和项目中的其他URL区分开
+
+默认的urls.py包含在文件夹learning_log中，现在我们只需在文件夹web_app中创建另外一个urls.py
+"""定义web_app的URL模式"""
+
+from django.conf.urls import url
+from . import views
+
+urlpatterns = [
+    #主页
+    url(r'^$', views.index, name = 'index'),
+]
+我们导入了url，因为我们需要使用它来将URL映射到视图,模块view
+句点表示让Python从当前的urls.py模块所在的文件夹中导入视图
+实际上URL模式是一个对函数url()的调用，此函数接收3个参数
+1>与请求的URL字符串匹配的正则表达式
+2>指定了要调用的视图函数views.index
+3>将URL模式的名称指定为index,让我们能够在代码的其他地方引用它，而不用引用URL
+
+2.编写视图
+打开learning_log下的views.py文件
+from django.shortcuts import render
+
+# Create your views here.
+def index(request):
+    """学习笔记的主页"""
+    return render(request, 'web_app/index.html')
+
+URL请求与我们刚才定义的模式匹配时，Django将在文件views.py中查找函数index(),再将请求对象传递给这个视图函数
+
+3.编写模板
+建立index.html文件
+
+4.运行服务器，发现主页内容已经被index.html包含的模板渲染
