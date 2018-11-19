@@ -24,5 +24,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/',include(admin.site.urls)),
+    # 包含web_app的url,实参namespace能够将web_app的URL同项目中的其他URL区分开
     url(r'', include('web_app.urls',namespace = 'web_app')),
 ]
