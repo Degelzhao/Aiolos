@@ -5,6 +5,9 @@
     <p>Topic: {{ topic }}</p>
 
     <p>Entries:</p>
+    <p>
+        <a href="{% url 'web_app:new_entry' topic.id %}">add new entry</a>
+    </p>
     <!--定义一个显示每个条目的项目列表-->
     <ul>
     <!--遍历条目-->
