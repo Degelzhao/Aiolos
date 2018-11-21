@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
-from .models import Topic
+from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
 # Create your views here.
@@ -60,3 +60,21 @@ def new_entry(request, topic_id):
 
     context = {'topic': topic, 'form': form}
     return render(request, 'web_app/new_entry.html', context)
+
+def edit_entry(request, entry_id):
+    """编辑已有条目"""
+    entry = Entry.objects.get(id = entry_id)
+    topic = entry.topic
+
+    if request.method != 'POST':
+        # 初次请求，使用当前条目填充表单
+        form = EntryForm(instance=entry)
+    else:
+        # POST提交的数据，对数据进行处理
+        form = EntryForm(instance=entry, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('web_app:topic', args=[topic.id]))
+
+    context = {'entry': entry, 'topic': topic, 'form': form }
+    return render(request, 'web_app/edit_entry.html', context)

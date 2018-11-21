@@ -17,6 +17,9 @@
             <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
             <!--显示text的完整值,过滤器linebreaks可以将含换行符的长条目转换为浏览器能够理解的格式-->
             <p>{{ entry.text|linebreaks }}</p>
+            <p>
+                <a href="{% url 'web_app:edit_entry' entry.id %}">edit entry</a>
+            </p>
         </li>
     {% empty %}
         <li>
