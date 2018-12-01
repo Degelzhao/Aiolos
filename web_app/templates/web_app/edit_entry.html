@@ -1,15 +1,23 @@
 {% extends "web_app/base.html" %}
+{% load bootstrap3 %}
+
+{% block header %}
+    <h2>Edit entry:</h2>
+{% endblock header %}
 
 {% block content %}
 
-    <p><a href="{% url 'web_app:topic' topic.id %}">{{ topic }}</a> </p>
+    <p><h4><a href="{% url 'web_app:topic' topic.id %}">{{ topic }}</a></h4></p>
 
-    <p>Edit entry:</p>
 
-    <form action="{% url 'web_app:edit_entry' entry.id %}" method="post">
+    <form action="{% url 'web_app:edit_entry' entry.id %}" method="post" class="form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button name = "submit">save change</button>
+        {% bootstrap_form form %}
+
+        {% buttons %}
+            <button name = "submit" class="btn btn-primary">save change</button>
+        {% endbuttons %}
+
     </form>
 
 {% endblock content %}
