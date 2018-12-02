@@ -5,7 +5,7 @@
 
 {% block content %}
     <p>
-        <a href="{% url 'web_app:new_entry' topic.id %}">add new entry</a>
+        <a href="{% url 'web_app:new_entry' topic.id %}">添加新条目</a>
     </p>
 
     {% for entry in entries %}
@@ -14,7 +14,7 @@
                 <h3>
                     {{ entry.date_added|date:'M d, Y H:i' }}
                     <small>
-                        <a href="{% url 'web_app:edit_entry' entry.id %}">edit entry</a>
+                        <a href="{% url 'web_app:edit_entry' entry.id %}">编辑</a>
                     </small>
                 </h3>
             </div>
@@ -24,7 +24,7 @@
         </div> <!-- panel -->
 
     {% empty %}
-        There are no entries for this topic yet.
+        现在还没有任何条目
     {% endfor %}
 
 {% endblock content %}

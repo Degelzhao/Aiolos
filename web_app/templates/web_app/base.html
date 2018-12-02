@@ -1,13 +1,13 @@
 {% load bootstrap3 %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>web_app</title>
+        <title>Aiolos、Es</title>
 
         {% bootstrap_css %}
         {% bootstrap_javascript %}
@@ -24,22 +24,22 @@
                             aria-expanded="false" aria-controls="navbar">
                     </button>
                     <a class="navbar-brand" href="{% url 'web_app:index' %}">
-                        web_app
+                        Aiolos、Es
                     </a>
                 </div>
 
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="{% url 'web_app:topics' %}">Topics</a></li>
+                        <li><a href="{% url 'web_app:topics' %}">主题</a></li>
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
                             <li><a>Hello, {{ user.username }}.</a></li>
-                            <li><a href="{% url 'users:logout' %}">log out</a> </li>
+                            <li><a href="{% url 'users:logout' %}">注销</a> </li>
                         {% else %}
-                            <li><a href="{% url 'users:register' %}">register</a></li>
-                            <li><a href="{% url 'users:login' %}">log in</a> </li>
+                            <li><a href="{% url 'users:register' %}">注册</a></li>
+                            <li><a href="{% url 'users:login' %}">登录</a> </li>
                         {% endif %}
                     </ul>
                 </div><!--/.nav-collapse -->
