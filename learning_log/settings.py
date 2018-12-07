@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
-import os
+import os, sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +25,7 @@ SECRET_KEY = '!5x-nj+qr+vp4foom&y07u8hh0#byu7evkpe#tpf9(#1*&4bf1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -133,13 +133,12 @@ BOOTSTRAP3 = {
     'include_jquery': True,
     }
 
-
 # Heroku设置
 cwd = os.getcwd()
 if cwd == '/app' or cwd[:4] == '/tmp':
     import dj_database_url
     DATABASES = {
-        'default': dj_database_url.config(default = 'postgres://localhost')
+        'default': dj_database_url.config(default='postgres://localhost')
     }
 
     # 让request.is_secure()承认X-Forwarded-Proto头
@@ -152,5 +151,5 @@ if cwd == '/app' or cwd[:4] == '/tmp':
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     STATIC_ROOT = 'staticfiles'
     STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, 'static')
+        os.path.join(BASE_DIR, 'static'),
     )
