@@ -1,0 +1,47 @@
+1.Django基本配置信息
+一个简单的项目必须具备的基本配置信息有:
+1>项目路径(BASE_DIR):主要通过os模块读取当前项目在系统的具体路径
+2>密钥配置(SECRET_KEY):自动生成，是一个随机值，主要用于重要数据的加密处理，提高系统的安全性
+3>调试模式(DEBUG):该值为布尔类型。如果在开发调试阶段应设置为True，在开发调试过程中会自动检测代码是否发生改变
+如果项目部署上线，应将其改为False，否则会泄露系统的相关信息
+4>域名访问权限(ALLOWED_HOSTS):设置可访问的域名，默认值为空。当DEBUG为True并且ALLOWED_HOSTS为空时，项目只允许以localhost
+或127.0.0.1在浏览器上访问。当DEBUG为False时，ALLOWED_HOSTS为必填项，否则程序无法启动，如果像允许所有域名访问，可设置
+ALLOWED_HOSTS = ['*']
+App列表(INSTALLED_APPS):告诉Django有哪些App。
+5>中间件:是处理Django的request和response对象的钩子
+当用户在网站中进行单击某个按钮等操作时，这个动作是用户向网站发送请求(request)，而网页会根据用户的操作返回相关的网页内容，
+这个过程称为响应处理(response)
+一般情况下，Django默认的中间配置可满足大部分的开发需求，在项目MIDDLEWARE中添加LocaleMiddleware中间件，使得Django内置的
+功能支持中文显示:
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # 使用中文
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+2.静态资源
+1>静态资源指的是网站中不会改变的文件。在一般的应用程序中，静态资源包括CSS文件、JavaScript文件以及图片等资源文件
+  一个项目在开发过程中肯定需要使用CSS和JavaScript文件，这些静态文件的存在主要由配置文件settings.py设置
+  静态资源存放在文件夹static，而文件夹static只能放在App里面
+  当项目启动时，Django会根据静态资源存放路径去查找相关的资源文件，查找功能主要由App列表INSTALLED_APPS的staticfiles实现
+ *如果想在项目根目录下存放静态资源，可以在配置文件settings.py中设置STATICFILES_DIRS属性，该属性以列表的形式表示
+  STATICFILES_DIRS = (
+          os.path.join(BASE_DIR, 'static'),
+      )
+  这样就可以在项目根目录下创建static文件夹存储静态文件了
+  可以访问http://127.0.0.1:8000/static/porsche.png进行访问静态资源
+
+2>STATIC_URL和STATICFILES_DIRS的区别:
+STATIC_URL是必须配置的属性而且属性值不能为空。如果没有配置STATICFILES_DIRS，则STATIC_URL只能识别App里的static静态资源文件夹
+STATICFILES_DIRS是可选配置属性，属性值为列表或元组格式，每个列表(元组)代表一个静态资源文件夹，这些文件夹可自行命名
+在浏览器上访问项目的静态资源时，无论项目的静态资源文件夹是如何命名的，在浏览器上，静态资源的上级目录必须为static，而
+static是STATIC_URL的属性值，因为STATIC_URL也是静态资源的起始URL
+
+除此之外，静态资源配置还有STATIC_ROOT，其作用是方便在服务器上部署项目，实现服务器和项目之间的映射
+STATIC_ROOT主要收集整个项目的静态资源并存放在一个新的文件夹，然后由该文件夹与服务器之间构建映射关系

@@ -158,4 +158,5 @@ if cwd == '/app' or cwd[:4] == '/tmp':
     STATIC_ROOT = 'staticfiles'
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
+        os.path.join(BASE_DIR,'public_static'),
     )
