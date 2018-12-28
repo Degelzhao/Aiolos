@@ -1,0 +1,130 @@
+1.编写URL规则
+1>URL是互联网上标准资源的地址，互联网上的每个文件都有一个唯一的URL，用于指出文件的路径位置
+简单的说，URL就是常说的网址，每个地址代表不同的网页，在Django中，URL也称为URLconf
+
+2>URL编写之前的准备工作
+在每个App中设置独立的静态资源和模板文件夹并添加一个空白内容的.py文件，命名为urls.py
+在App里添加urls.py是将属于App的URL都写入到该文件中，而项目根目录的urls.py是将每个App的urls.py统一管理。当程序收到用户
+请求的时候，首先在根目录的urls.py查找该URL是属于哪个App，然后再从App的urls.py找到具体的URL信息。
+(1)# 根目录的urls.py
+
+# 导入Admin功能模块
+from django.contrib import admin
+# 导入URL编写模块
+from django.urls import path,include
+# 整个项目的URL集合，每个元素代表一条URL信息
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    # URL为空，代表为网站的域名，即127.0.0.1:8000，通常是网站的首页，include将该URL分发给index的urls.py处理
+    path('', include('index.urls'))
+    ]
+
+(2)下一步需要对index的urls.py编写URL信息:
+
+# index的urls.py
+from django.urls import path
+from . import views
+urlpatterns = [
+    path('', views.index)
+    ]
+上述代码导入了同一目录下的views.py文件，该文件用于编写视图函数，处理URL请求信息并返回网页内容给用户
+
+(3)在views.py中编写index函数的处理过程
+
+# index的views.py
+from django.http import HttpResponse
+# Create your views here:
+def index(request):
+    return HttpResponse("Hello world")
+
+index函数必须设置参数request，该参数代表当前用户的请求对象，视图函数执行完成后必须使用return将处理结果返回，否则程序
+会抛出异常信息
+
+2.带变量的URL
+1>在日常开发过程中，有时候一个URL可以代表多个不同的页面，如编写带有日期的URL，若根据前面的编写方式，按一年计算，则需要
+开发者编写365个不同的URL才能实现，这种做法是不可取的。因此，Django在编写URL时，可以对URL设置变量值，使URL具有多样性
+
+(1)index的urls.py
+from django.urls import path, re_path
+from . import views
+urlpatterns = [
+    # 配置简单URL
+    path('', views.index),
+    # 带变量的URL
+    path('<year>/<int:month>/<slug:day>', views.mydate)
+    ]
+
+在URL中使用变量符号"< >"可以为URL设置变量，在括号里面以冒号划分为两部分，前面代表的是变量的数据类型，后面代表的是变量名，
+变量名可以自行命名
+
+(2)在views.py中编写视图函数mydate的处理方法
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# 带变量的URL的视图函数
+def mydate(request, year, month, day):
+    return HttpResponse(str(year) +'/'+ str(month) +'/'+ str(day))
+
+注意:URL的变量和视图函数的参数要一一对应
+
+(3)上述例子只是限定了变量的数据格式，使得某些变量值不符合日期格式要求，下面来引入正则表达式来解决这个问题
+
+from django.urls import path, re_path
+from . import views
+urlpatterns = [
+    # 配置简单URL
+    path('', views.index),
+    # 带变量的URL
+    # path('<year>/<int:month>/<slug:day>', views.mydate),
+    re_path('(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<day>[0-9]{2}).html', views.mydate)
+    ]
+
+首先导入re_path模块，正则表达式的作用是对URL的变量进行截取与判断，以小括号表示，每个小括号的前后可以使用斜杠或者其他
+字符将其分隔。在小括号内可以分为3个部分
+?P是固定格式
+<year>为变量的编写规则
+[0-9]{4}是正则表达式的匹配模式，代表变量的长度为4，只允许取0-9的值
+
+注意:如果URL的末端使用正则表达式，那么在该URL的末端应加上斜杠或者其他字符，否则正则表达式无法生效。例如上面的变量day，
+若在末端没有设置".html"，则在浏览器上输入无限长的字符串，程序也能正常访问
+
+3.设置参数name
+除了在URL里面设置变量之外，Django还可以对URL进行命名。
+在index的urls.py、views.py和模板myyear.html中添加以下代码:
+
+# 带参数name的URL
+re_path('(?P<year>[0-9]{4}).html', views.myyear, name='myyear')
+
+# 参数name的URL的视图函数
+def myyear(request, year):
+    return render(request, 'myyear.html')
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+方法一:
+<div><a href="/2018.html">2018 old Archive</a></div>
+方法二:
+<div><a href="{% url 'myyear' 2018 %}">2018 Archive</a></div>
+</body>
+</html>
+
+{% url 'myyear' 2018 %}是Django的模板语法，模板语法以{% %}表示，其中，url 'myyear'是将命名为myyear的URL地址信息
+作为href属性值，2018是该URL的变量year
+参数name的作用是对该URL地址信息进行命名，然后在HTML模板中使用可以生成相应的URL信息
+
+注意:
+在以往，大多数开发者都是采用第一种方法在模板上设置每个标签a的href的属性值，如果URL地址信息发生变更，就要修改每个标签a的
+href属性值，这种做法不利于URL的变更和维护，而在URL中设置参数name，只要参数name的值不变，无论URL地址信息如何修改都无须
+修改模板中标签a的href属性值。
+
+
+
+
+
+
+
