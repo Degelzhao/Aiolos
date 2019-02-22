@@ -88,6 +88,17 @@ DATABASES = {
     }
 }
 
+DATABASES ={
+    'default':{
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_db',
+        'USER': 'root',
+        'PASSWORD':'1234',
+        'HOST':'127.0.0.1',
+        'PORT':'3306',
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -111,9 +122,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -160,3 +171,6 @@ if cwd == '/app' or cwd[:4] == '/tmp':
         os.path.join(BASE_DIR, 'static'),
         os.path.join(BASE_DIR,'public_static'),
     )
+
+# 配置自定义用户表MyUser
+AUTH_USER_MODEL = 'users.MyUser'
